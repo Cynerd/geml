@@ -1,0 +1,18 @@
+site_name: SGP
+repo_url: https://github.com/Cynerd/sgp.git
+site_description: Simple genetal preprocessor
+copyright: GNU General Public License, version 2.0
+pages:
+- Home: index.md
+- Syntax: syntax.md
+- Built-in commands: builtin_commands.md
+- Evaluation process: evaluation.md
+- Modules:
+    - Array: modules/array.md
+    - File: modules/file.md
+    - Protect: modules/protect.md
+    - Python: modules/python.md
+- Modules creation: module_creation.md
+theme: readthedocs
+
+site_dir: html
