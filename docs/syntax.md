@@ -53,8 +53,8 @@ Special macros
 --------------
 These macros has special meaning. They can't be redefined, but can be overloaded
 using modules. And they are not defined in processed text.
-### SGP_VERSION
-Expands to version of sgp tool.
+### GEML_VERSION
+Expands to version of geml tool.
 ### FILE
 Expands to name of file that is processed. This macro is not changing during whole
 preprocessing. Note that you can use it in included files to identify name of

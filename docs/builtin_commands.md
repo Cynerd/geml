@@ -19,8 +19,8 @@ $limit(0)$include(file)$endlimit
 ```
 
 ### $load(...)
-This loads additional modules. sgp searches with precedence for modules in file
-directory and in paths defined by environment variable `SGPMODULES`. `NAME` is in
+This loads additional modules. Geml searches with precedence for modules in file
+directory and in paths defined by environment variable `GEMLMODULES`. `NAME` is in
 such case relative path to module, but also absolute path can be used.
 
 Be aware that modules stays loaded even after current file preprocessing is
@@ -100,7 +100,7 @@ specify any shell command in `CMD`.
 `TEXT` is printed to error output and spg is terminated.
 
 ### $warning(TEXT)
-`TEXT` is printed to error output, but sgp continuous preprocessing text.
+`TEXT` is printed to error output, but geml continuous preprocessing text.
 
 ### $info(TEXT)
 Simply prints `TEXT` to standard output. If standard output is used as output of

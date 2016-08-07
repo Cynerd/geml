@@ -1,14 +1,15 @@
 # vim:ts=4:sw=4:noexpandtab
 MAKEFLAGS += --no-builtin-rules
 
-# Load configuration
--include $(O)/.config.mk
-
 # Default output path. Can be changed by enviroment to compile to different folder
 # than default.
 O ?= .
 # This variable can be overwritten to show executed commands
 Q = @
+
+# Load configuration
+-include $(O)/.config.mk
+
 
 # TODO add CROSS_COMPILE support
 BISON ?= bison
@@ -17,7 +18,7 @@ CC ?= gcc
 
 
 .PHONY: all
-all: $(O)/sgp
+all: $(O)/geml
 
 # TODO modules
 
@@ -28,11 +29,11 @@ CFLAGS += -Wall
 CFLAGS += -Iinclude -include $(O)/build/config.h
 
 ### Source files list ###########################
-SRC = sgp.c \
+SRC = geml.c \
 	  utils.c \
-	  parser.c \
 	  io.c \
-	  command.c
+	  command.c \
+	  parser.c
 ### End of source files list ####################
 
 CSRC = $(patsubst %,src/%,$(filter %.c,$(SRC)))
@@ -49,9 +50,9 @@ DEP = $(patsubst src/%.c,$(O)/build/%.d,$(CSRC))
 .PHONY: help
 help:
 	@echo "Simple general preprocessor make targets:"
-	@echo " all|sgp     - Build sgp executable"
+	@echo " all|geml    - Build geml executable"
 	@echo " help        - Prints this text help."
-	@echo " install     - Install sgp to you system"
+	@echo " install     - Install geml to you system"
 	@echo " uninstall   - Revert install target actions on your system"
 	@echo " clean       - Cleans builded files"
 	@echo " distclean   - Same as clean but also removes distributed generated files"
@@ -75,8 +76,8 @@ uninstall:
 clean::
 	@echo " CLEAN build"
 	$(Q)$(RM) -r $(O)/build
-	@echo " CLEAN sgp"
-	$(Q)$(RM) $(O)/sgp
+	@echo " CLEAN geml"
+	$(Q)$(RM) $(O)/geml
 .PHONY: distclean
 distclean:: clean
 	@echo " CLEAN distributed"
@@ -112,7 +113,7 @@ $(DEP): $(O)/build/%.d: src/%.c
 	$(Q)$(CC) -MM -MG -MT '$*.o $@' $(CFLAGS) $< -MF $@
 endif # DEBUG
 
-$(O)/sgp: $(OBJ)
+$(O)/geml: $(OBJ)
 	@echo " LD    $@"
 	$(Q)$(CC) $(CFLAGS) $^ -o $@
 

@@ -3,7 +3,7 @@
 !/.gitignore
 
 build
-sgp
+geml
 
 # Comment these for release. They are generated files using gperf and bison. For
 # final release they can be in repository. But during development ignore them.

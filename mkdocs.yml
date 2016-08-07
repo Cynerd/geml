@@ -1,6 +1,6 @@
-site_name: SGP
-repo_url: https://github.com/Cynerd/sgp.git
-site_description: Simple genetal preprocessor
+site_name: GEML
+repo_url: https://github.com/Cynerd/geml.git
+site_description: General embedded macro language
 copyright: GNU General Public License, version 2.0
 pages:
 - Home: index.md
