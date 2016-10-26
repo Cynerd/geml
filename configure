@@ -8,12 +8,15 @@
 CNFS="GEML_VERSION:0.1:string:F:T
 GEML_CONTACT:cynerd@email.cz:string:F:T
 PREFIX:/usr/local:string:T:F
-MOD_LUA:yes::T:F
-MOD_PYTHON:yes::T:F
+EPREFIX:/usr/local:string:T:F
 DEBUG:no::T:F
+CC:cc::T:F
 CFLAGS:::T:F
-LFLAGS:::T:F"
+LFLAGS:::T:F
+DOT:dot::T:F
+MKDOCS:mkdocs::T:F"
 ############################################################################
+# TODO add options to fine tune installation directories
 
 print_help() {
 	echo "Usage: ./configure [OPTION]..."
@@ -21,19 +24,22 @@ print_help() {
 	echo "and prepare it for building."
 	echo
 	echo "  --help, -h              Give this help list"
-	echo "  --prefix=PATH           Set PATH as installation prefix."
-	echo "                          In default /usr/local"
 	echo "  --debug, -d             Enable development features."
 	echo "  --release, -r           Disable development features for project."
 	echo "  --dep-check             Force depencency check for this machine."
-	echo 
-	echo "  --mod-lua-enable, --mod-lua-disable"
-	echo "	Set if Lua module should be compiled. In default is enabled."
-	echo "  --mod-python-enable, --mod-python-disable"
-	echo "	Set if Python module should be compiled. In default is enabled."
+	echo "  --prefix=PREFIX         Set PREFIX as installation prefix for"
+	echo "                          architecture independent files."
+	echo "                          In default /usr/local"
+	echo "  --exec-prefix=EPREFIX   Set EPREFIX as installation prefix for"
+	echo "                          architecture dependent files."
+	echo "                          In default PREFIX"
 	echo
 	echo "Environment variables:"
-	echo "  CROSS_COMPILE           Prefix for compilation tools."
+	echo "  CC                      C compiler command."
+	echo "  CFLAGS                  C compiler flags."
+	echo "  LDFLAGS                 C Linker flags."
+	echo "  DOT                     Directed graphs drawing program."
+	echo "  MKDOCS                  Project documentation generator."
 	echo
 	echo "GEML version $GEML_VERSION"
 	echo "Report bugs to <$GEML_CONTACT>."
@@ -42,13 +48,19 @@ print_help() {
 CONFIG_FILE=.config
 CONFIGURED_FILE=.configured # TODO
 
+# Backup variables from environment
+ENVVARS="CC CFLAGS LDFLAGS DOT MKDOCS"
+for E in $ENVVARS; do
+    eval "[ -n \"\${$E+y}\" ]" && eval "BACKUP_$E=\$$E"
+done
+
 # TODO support for values with escaped colons
-# Load default configuration
-eval `echo "$CNFS" | grep -o -E '^[^:]*:[^:]*' | sed 's/:/=/'`
+# Load default configuration if variable not set from environment
+eval `echo "$CNFS" | sed -ne 's/^\([^:]*\):\([^:]*\).*$/\1=\2/p'`
 
 # Load existing configuration
 if [ -f "$CONFIG_FILE" ]; then
-	source ./"$CONFIG_FILE"
+	. ./"$CONFIG_FILE"
 fi
 
 # Requested operation.
@@ -73,18 +85,6 @@ while [ "$#" -gt 0 ]; do
 		-r|--release)
 			DEBUG=no
 			;;
-		--mod-lua-enable)
-			MOD_LUA=yes
-			;;
-		--mod-lua-disable)
-			MOD_LUA=no
-			;;
-		--mod-python-enable)
-			MOD_PYTHON=yes
-			;;
-		--mod-python-disable)
-			MOD_PYTHON=no
-			;;
 		--op-makefile)
 			OP=m
 			;;
@@ -97,6 +97,11 @@ while [ "$#" -gt 0 ]; do
 			;;
 	esac
 	shift
+done
+
+# Recover from enviroment variables
+for E in $ENVVARS; do
+    eval "[ -n \"\${BACKUP_$E+y}\" ]" && eval "$E=\$BACKUP_$E"
 done
 
 # Basically save configuration to file
@@ -119,7 +124,6 @@ doext() {
 	GEMLDIR=`dirname "$0"`
 
 	echo "# This is external Makefile for GEML." > Makefile
-	echo "export CROSS_COMPILE=$CROSS_COMPILE" >> Makefile
 	echo >> Makefile
 	echo "GEML_PATH = $GEMLDIR" >> Makefile
 	echo >> Makefile
@@ -128,7 +132,7 @@ doext() {
 	echo >> Makefile
 	echo "MAKEFLAGS += --no-print-directory" >> Makefile
 	echo >> Makefile
-	echo "Q = @" >> Makefile
+	echo "Q ?= @" >> Makefile
 	echo ".PHONY: all \$(MAKECMDGOALS)" >> Makefile
 	echo "all \$(MAKECMDGOALS):" >> Makefile
 	echo "	\$(Q)\$(MAKE) \$(MAKEARGS) \$@" >> Makefile

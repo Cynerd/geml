@@ -5,22 +5,13 @@ MAKEFLAGS += --no-builtin-rules
 # than default.
 O ?= .
 # This variable can be overwritten to show executed commands
-Q = @
+Q ?= @
 
 # Load configuration
 -include $(O)/.config.mk
 
-
-# TODO add CROSS_COMPILE support
-BISON ?= bison
-CC ?= gcc
-# TODO also other tools
-
-
 .PHONY: all
 all: $(O)/geml
-
-# TODO modules
 
 ifeq ($(DEBUG),yes)
 CFLAGS += -ggdb -DDEBUG
@@ -32,17 +23,10 @@ CFLAGS += -Iinclude -include $(O)/build/config.h
 SRC = geml.c \
 	  utils.c \
 	  io.c \
-	  command.c \
 	  parser.c
 ### End of source files list ####################
 
 CSRC = $(patsubst %,src/%,$(filter %.c,$(SRC)))
-YSRC = $(patsubst %,src/%,$(filter %.y,$(SRC)))
-CYSRC = $(patsubst %,%.c,$(YSRC))
-HYSRC = $(patsubst %,%.h,$(YSRC))
-CSRC += $(CYSRC)
-GPERFSRC = $(patsubst %,src/%,$(filter %.gperf,$(SRC)))
-HGPERFSRC = $(patsubst %,%.h,$(GPERFSRC))
 
 OBJ = $(patsubst src/%.c,$(O)/build/%.o,$(CSRC))
 DEP = $(patsubst src/%.c,$(O)/build/%.d,$(CSRC))
@@ -57,11 +41,11 @@ help:
 	@echo " clean       - Cleans builded files"
 	@echo " distclean   - Same as clean but also removes distributed generated files"
 	@echo " docs        - Build html documentation"
-	@echo " serve-docs  - Start html server with documentation on localhost:4000"
+	@echo " serve-docs  - Start html server with documentation on localhost:8000"
 	@echo " clean-docs  - Removes generated documentation"
 	@echo "Some enviroment variables to be defined:"
-	@echo " CROSS_COMPILE - Specifies installation prefix. Default is /usr/local"
 	@echo " Q             - Define emty to show executed commands"
+	@echo " O             - Output path."
 
 .PHONY: install
 install:
@@ -80,34 +64,13 @@ clean::
 	$(Q)$(RM) $(O)/geml
 .PHONY: distclean
 distclean:: clean
-	@echo " CLEAN distributed"
-	$(Q)$(RM) $(CYSRC)
-	$(Q)$(RM) $(HYSRC)
-	$(Q)$(RM) $(HGPERFSRC)
 	@echo " CLEAN configuration"
 	$(Q)$(RM) $(O)/.config
 
-docs/%.dot.png: docs/%.dot
-	@echo " DOT $@"
-	$(Q)dot -Tpng -O $<
-
-.PHONY: docs
-docs: docs/parser-states.dot.png
-	@echo " DOC $@"
-	$(Q)mkdocs build
-
-.PHONY: serve-docs
-serve-docs: docs/parser-states.dot.png
-	$(Q)mkdocs serve
-
-.PHONY: clean-docs
-clean-docs:
-	@echo " CLEAN docs"
-	$(Q)$(RM) docs/parser-states.dot.png
-	$(Q)$(RM) -r site
-
+## Building targets ##
 ifeq (,$(filter clean distclean help docs serve-docs clean-docs \
 	  ,$(MAKECMDGOALS))) # Ignore build targets if goal is not building
+
 ifeq ($(DEBUG),yes)
 -include $(DEP) # If developing, use dependencies from source files
 .PHONY: dependency dep
@@ -120,7 +83,7 @@ endif # DEBUG
 
 $(O)/geml: $(OBJ)
 	@echo " LD    $@"
-	$(Q)$(CC) $(CFLAGS) $^ -o $@
+	$(Q)$(CC) $(LDFLAGS) $^ -o $@
 
 $(OBJ): $(O)/build/%.o: src/%.c $(O)/build/config.h
 	@mkdir -p "$(@D)"
@@ -131,22 +94,32 @@ $(O)/build/config.h: $(O)/.config
 	@mkdir -p "$(@D)"
 	@echo " CONF  $@"
 	$(Q)./configure --op-h > $@
-
-$(HGPERFSRC): %.y.h: %.y.c
-	@
-$(CYSRC): %.y.c: %.y
-	@echo " BISON $@"
-	$(Q)$(BISON) -d -o $@ $<
-
-$(HGPERFSRC): %.h: %
-	@echo " GPERF $@"
-	$(Q)$(GPERF) --output-file=$@ $<
 endif
 
-# Configuation files
+## Configuation files ##
 $(O)/.config:
 	$(error Please run configure script first)
 
 $(O)/.config.mk: $(O)/.config
 	@echo " CONF  $@"
 	$(Q)./configure --op-makefile > $@
+
+## Documentation targets ##
+.PHONY: docs
+docs: docs/parser-states.dot.png
+	@echo " DOC $@"
+	$(Q)$(MKDOCS) build
+
+.PHONY: serve-docs
+serve-docs: docs/parser-states.dot.png
+	$(Q)$(MKDOCS) serve
+
+.PHONY: clean-docs
+clean-docs:
+	@echo " CLEAN docs"
+	$(Q)$(RM) docs/parser-states.dot.png
+	$(Q)$(RM) -r site
+
+docs/%.dot.png: docs/%.dot
+	@echo " DOT $@"
+	$(Q)$(DOT) -Tpng -O $<
