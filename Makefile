@@ -87,18 +87,23 @@ distclean:: clean
 	@echo " CLEAN configuration"
 	$(Q)$(RM) $(O)/.config
 
+docs/%.dot.png: docs/%.dot
+	@echo " DOT $@"
+	$(Q)dot -Tpng -O $<
+
 .PHONY: docs
-docs:
+docs: docs/parser-states.dot.png
 	@echo " DOC $@"
 	$(Q)mkdocs build
 
 .PHONY: serve-docs
-serve-docs:
+serve-docs: docs/parser-states.dot.png
 	$(Q)mkdocs serve
 
 .PHONY: clean-docs
 clean-docs:
 	@echo " CLEAN docs"
+	$(Q)$(RM) docs/parser-states.dot.png
 	$(Q)$(RM) -r site
 
 ifeq (,$(filter clean distclean help docs serve-docs clean-docs \

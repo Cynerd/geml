@@ -1,0 +1,35 @@
+digraph ParserStates {
+label="Parser states";
+
+init [label="Init"];
+disabled [label="Parser disabled"];
+error [label="Error"];
+
+init -> disabled [label="If _EVAEN is not empty"];
+init -> Parser [label="If _EVAEN is empty"];
+Parser -> disabled [label="_EVADI located"];
+disabled -> Parser [label="_EVAEN located"];
+
+Parser {
+nomacro [label="No macro"];
+macro_start [label="Macro/command start"];
+macro [label="Macro/command located"];
+args [label="Arguments"];
+expansion [label="Macro/command expansion (Secondary parser)"];
+
+Parser -> nomacro [style="dotted"];
+expansion -> Parser [style="dotted"];
+nomacro -> macro_start [label="_INIT located"];
+macro_start -> macro [label="_MACR matches text after _INIT"];
+macro_start -> error [label="else"];
+macro -> args [label="_ARGST matches after _MACR"];
+args -> args [label="_ARGSE localted"];
+args -> macro_start [label="_INIT located"];
+args -> expansion [label="_ARGEN located"];
+macro -> expansion [label="else"];
+expansion -> args [label="If some macro arguments are still opened"];
+expansion -> nomacro [label="If last opened macro argument was closed"];
+
+}
+
+}

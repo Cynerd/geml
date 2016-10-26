@@ -10,3 +10,4 @@ geml
 *.y.c
 *.y.h
 *.gperf.h
+*.dot.png
