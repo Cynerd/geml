@@ -19,11 +19,14 @@ endif
 CFLAGS += -Wall
 CFLAGS += -Iinclude -include $(O)/build/config.h
 
+# Apply CPREFIX
+CC:=$(CPREFIX)$(CC)
+
 ### Source files list ###########################
 SRC = geml.c \
-	  utils.c \
-	  io.c \
-	  parser.c
+      args_parser.c \
+      io.c \
+      utils.c
 ### End of source files list ####################
 
 CSRC = $(patsubst %,src/%,$(filter %.c,$(SRC)))
@@ -93,7 +96,7 @@ $(OBJ): $(O)/build/%.o: src/%.c $(O)/build/config.h
 $(O)/build/config.h: $(O)/.config
 	@mkdir -p "$(@D)"
 	@echo " CONF  $@"
-	$(Q)./configure --op-h > $@
+	$(Q)$(O)/configure --op-h > $@
 endif
 
 ## Configuation files ##
@@ -102,7 +105,7 @@ $(O)/.config:
 
 $(O)/.config.mk: $(O)/.config
 	@echo " CONF  $@"
-	$(Q)./configure --op-makefile > $@
+	$(Q)$(O)/configure --op-makefile > $@
 
 ## Documentation targets ##
 .PHONY: docs
@@ -118,7 +121,7 @@ serve-docs: docs/parser-states.dot.png
 clean-docs:
 	@echo " CLEAN docs"
 	$(Q)$(RM) docs/parser-states.dot.png
-	$(Q)$(RM) -r site
+	$(Q)$(RM) -r html
 
 docs/%.dot.png: docs/%.dot
 	@echo " DOT $@"

@@ -1,5 +1,5 @@
 #!/bin/sh
-# vim:ft=sh:ts=4:sw=4:expandtab
+# vim:ft=sh:ts=4:sw=4:noexpandtab
 
 # Configured variables #####################################################
 # Described in following format:
@@ -10,6 +10,7 @@ GEML_CONTACT:cynerd@email.cz:string:F:T
 PREFIX:/usr/local:string:T:F
 EPREFIX:/usr/local:string:T:F
 DEBUG:no::T:F
+CPREFIX:::T:F
 CC:cc::T:F
 CFLAGS:::T:F
 LFLAGS:::T:F
@@ -35,6 +36,7 @@ print_help() {
 	echo "                          In default PREFIX"
 	echo
 	echo "Environment variables:"
+    echo "  CPREFIX                 Compilation tools prefix."
 	echo "  CC                      C compiler command."
 	echo "  CFLAGS                  C compiler flags."
 	echo "  LDFLAGS                 C Linker flags."
@@ -49,7 +51,7 @@ CONFIG_FILE=.config
 CONFIGURED_FILE=.configured # TODO
 
 # Backup variables from environment
-ENVVARS="CC CFLAGS LDFLAGS DOT MKDOCS"
+ENVVARS="CPREFIX CC CFLAGS LDFLAGS DOT MKDOCS"
 for E in $ENVVARS; do
     eval "[ -n \"\${$E+y}\" ]" && eval "BACKUP_$E=\$$E"
 done
@@ -76,8 +78,12 @@ while [ "$#" -gt 0 ]; do
 			print_help
 			exit 0
 			;;
+		--prefix)
+			PREFIX=$2
+			shift
+			;;
 		--prefix=*)
-			# TODO
+			PREFIX=${1#--prefix=}
 			;;
 		-d|--debug)
 			DEBUG=yes
@@ -141,6 +147,7 @@ doext() {
 
 	echo "# This is external configure script for GEML." > configure
 	echo "GEML_PATH=$GEMLDIR" >> configure
+	echo "cd \$(dirname \$0)" >> configure
 	echo "\$GEML_PATH/configure \$@" >> configure
 	chmod +x configure
 
@@ -154,7 +161,7 @@ makefile() {
 		fi
 		NAME=`echo "$L" | grep -o -E '^[^:]*'`
 		eval "VALUE=\$$NAME"
-		echo "$NAME = $VALUE"
+		echo "$NAME := $VALUE"
 	done
 }
 
