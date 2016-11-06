@@ -67,7 +67,7 @@ clean::
 	@echo " CLEAN geml"
 	$(Q)$(RM) $(O)/geml
 .PHONY: distclean
-distclean:: clean
+distclean:: clean clean-docs
 	@echo " CLEAN configuration"
 	$(Q)$(RM) $(O)/.config
 
