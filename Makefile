@@ -1,11 +1,13 @@
 # vim:ts=4:sw=4:noexpandtab
 MAKEFLAGS += --no-builtin-rules
 
-# Default output path. Can be changed by enviroment to compile to different folder
-# than default.
-O ?= .
 # This variable can be overwritten to show executed commands
 Q ?= @
+
+# Default output path. This is used when output (writable) directory is different
+# than project directory. You shouldn't be setting it by hand, but it is used in
+# external Makefiles.
+O ?= .
 
 # Load configuration
 -include $(O)/.config.mk
@@ -48,7 +50,6 @@ help:
 	@echo " clean-docs  - Removes generated documentation"
 	@echo "Some enviroment variables to be defined:"
 	@echo " Q             - Define emty to show executed commands"
-	@echo " O             - Output path."
 
 .PHONY: install
 install:
