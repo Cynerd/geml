@@ -7,11 +7,6 @@ pages:
 - Syntax: syntax.md
 - Built-in commands: builtin_commands.md
 - Evaluation process: evaluation.md
-- Modules:
-    - Array: modules/array.md
-    - File: modules/file.md
-    - Protect: modules/protect.md
-    - Python: modules/python.md
 - Modules creation: module_creation.md
 theme: readthedocs
 

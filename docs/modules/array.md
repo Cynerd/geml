@@ -1,1 +1,0 @@
-../../modules/array/README.md
