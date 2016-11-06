@@ -12,9 +12,12 @@ disabled -> Parser [label="_EVAEN located"];
 
 Parser {
 nomacro [label="No macro"];
+nomacro_escape [label="No macro escaped"];
 macro_start [label="Macro/command start"];
 macro [label="Macro/command located"];
+macro_escape [label="Macro/command located arguments escaped"];
 args [label="Arguments"];
+args_escaped [label="Arguments escaped"];
 expansion [label="Macro/command expansion (Secondary parser)"];
 
 Parser -> nomacro [style="dotted"];
@@ -23,12 +26,20 @@ nomacro -> macro_start [label="_INIT located"];
 macro_start -> macro [label="_MACR matches text after _INIT"];
 macro_start -> error [label="else"];
 macro -> args [label="_ARGST matches after _MACR"];
-args -> args [label="_ARGSE localted"];
-args -> macro_start [label="_INIT located"];
+args -> args [label="_ARGSE located"];
+args -> macro_start [label="_INIT located\nPush macro/commands buffer"];
 args -> expansion [label="_ARGEN located"];
 macro -> expansion [label="else"];
-expansion -> args [label="If some macro arguments are still opened"];
-expansion -> nomacro [label="If last opened macro argument was closed"];
+expansion -> args [label="Pop macro/commands buffer"];
+expansion -> nomacro [label="Macro/commans buffer empty"];
+nomacro -> nomacro_escape [label="_ESCAP located"];
+nomacro_escape -> nomacro [label="_INIT matches text after _ESCAP"];
+nomacro_escape -> error [label="else"];
+macro -> macro_escape [label="_ESCAP matches text after _MACR"];
+macro_escape -> expansion;
+args -> args_escaped [label="_ESCAP located"];
+args_escaped -> args [label="_ARGSE, _ARGEN or _INIT matches text after _ESCAP"];
+args_escaped -> error [lavel="else"];
 
 }
 
