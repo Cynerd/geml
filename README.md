@@ -1,5 +1,5 @@
-General embedded macro language
-===============================
+General extendable macro language
+=================================
 This project defines simple language embedded in processed text and program for
 its execution. It is inspired with C preprocessor, m4 and php although it is
 neither.
