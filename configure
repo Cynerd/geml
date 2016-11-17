@@ -36,7 +36,7 @@ print_help() {
 	echo "                          In default PREFIX"
 	echo
 	echo "Environment variables:"
-    echo "  CPREFIX                 Compilation tools prefix."
+	echo "  CPREFIX                 Compilation tools prefix."
 	echo "  CC                      C compiler command."
 	echo "  CFLAGS                  C compiler flags."
 	echo "  LDFLAGS                 C Linker flags."
@@ -53,10 +53,9 @@ CONFIGURED_FILE=.configured # TODO
 # Backup variables from environment
 ENVVARS="CPREFIX CC CFLAGS LDFLAGS DOT MKDOCS"
 for E in $ENVVARS; do
-    eval "[ -n \"\${$E+y}\" ]" && eval "BACKUP_$E=\$$E"
+	eval "[ -n \"\${$E+y}\" ]" && eval "BACKUP_$E=\$$E"
 done
 
-# TODO support for values with escaped colons
 # Load default configuration if variable not set from environment
 eval `echo "$CNFS" | sed -ne 's/^\([^:]*\):\([^:]*\).*$/\1=\2/p'`
 
@@ -107,7 +106,7 @@ done
 
 # Recover from enviroment variables
 for E in $ENVVARS; do
-    eval "[ -n \"\${BACKUP_$E+y}\" ]" && eval "$E=\$BACKUP_$E"
+	eval "[ -n \"\${BACKUP_$E+y}\" ]" && eval "$E=\$BACKUP_$E"
 done
 
 # Basically save configuration to file
