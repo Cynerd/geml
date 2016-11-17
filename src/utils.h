@@ -17,6 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+#include <stdlib.h>
 
 #ifndef _UTILS_H_
 #define _UTILS_H_
@@ -50,5 +51,16 @@ void print_message(const char *file, const int line, enum Verbosity level, const
 #endif /* DEBUG */
 
 #define ASSERT(CHECK) do { if (!(CHECK)) { printf("Assertion failed on %s:%d\n", __FILE__, __LINE__); } } while(0)
+
+// Secure versions of malloc and calloc. They just wraps malloc and calloc and
+// checks return value. Returned NULL causes program to die.
+#define smalloc(SIZE) smalloc_internal(__FILE__, __LINE__, SIZE)
+#define scalloc(NMEMB, SIZE) scalloc_internal(__FILE__, __LINE__, NMEMB, SIZE)
+#define srealloc(PTR, SIZE) srealloc_internal(__FILE__, __LINE__, PTR, SIZE)
+#define error_out_of_memmory error_out_of_memmory_internal(__FILE__, __LINE__)
+void *smalloc_internal(const char *file, const int line, size_t size);
+void *scalloc_internal(const char *file, const int line, size_t nmemb, size_t size);
+void *srealloc_internal(const char *file, const int line, void *ptr, size_t size);
+void error_out_of_memmory_internal(const char *file, const int line);
 
 #endif /* _UTILS_H_ */

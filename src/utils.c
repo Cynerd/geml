@@ -64,3 +64,32 @@ void print_message(const char *file, const int line, enum Verbosity level, const
 	vfprintf(stderr, msg, args);
 	fputs("\n", stderr);
 }
+
+void *smalloc_internal(const char *file, const int line, size_t size) {
+	void *r;
+	r = malloc(size);
+	if (!r)
+		error_out_of_memmory_internal(file, line);
+	return r;
+}
+
+void *scalloc_internal(const char *file, const int line, size_t nmemb, size_t size) {
+	void *r;
+	r = calloc(nmemb, size);
+	if (!r)
+		error_out_of_memmory_internal(file, line);
+	return r;
+}
+
+void *srealloc_internal(const char *file, const int line, void *ptr, size_t size) {
+	void *r;
+	r = realloc(ptr, size);
+	if (!r)
+		error_out_of_memmory_internal(file, line);
+	return r;
+}
+
+void error_out_of_memmory_internal(const char *file, const int line) {
+	print_message(file, line, V_DIE, "Memory allocation failed. Out of memory?");
+	abort();
+}
