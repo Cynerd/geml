@@ -48,6 +48,8 @@ help:
 	@echo " docs        - Build html documentation"
 	@echo " serve-docs  - Start html server with documentation on localhost:8000"
 	@echo " clean-docs  - Removes generated documentation"
+	@echo " tests       - Executes all tests"
+	@echo " help-test   - Prints help for all implemented tests"
 	@echo "Some enviroment variables to be defined:"
 	@echo " Q             - Define emty to show executed commands"
 
@@ -79,6 +81,9 @@ clean::
 distclean:: clean clean-docs
 	@echo " CLEAN configuration"
 	$(Q)$(RM) $(O)/.config
+
+# Include test targets
+include tests/tests.mk
 
 ## Building targets ##
 ifeq (,$(filter clean distclean help docs serve-docs clean-docs \

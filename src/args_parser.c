@@ -26,7 +26,7 @@
 #include "io.h"
 
 const char *help_text = 
-	"Usage: geml [OPTIONS]... INPUT_FILE\n"
+	"Usage: geml [OPTION]... INPUT_FILE\n"
 	"  General extendable macro language processing tool.\n"
 	"\n"
 	"Options:\n"

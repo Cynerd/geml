@@ -17,6 +17,8 @@ LFLAGS:::T:F
 INSTALL:install::T:F
 GZIP:gzip::T:F
 DOT:dot::T:F
+CPPCHECK:cppcheck::T:F
+VALGRIND:valgrind::T:F
 MKDOCS:mkdocs::T:F"
 ############################################################################
 # TODO add options to fine tune installation directories
@@ -45,6 +47,8 @@ print_help() {
 	echo "  INSTALL                 Copy files and set attributes."
 	echo "  GZIP                    Compress file."
 	echo "  DOT                     Directed graphs drawing program."
+	echo "  CPPCHECK                Tool for static code analysis."
+	echo "  VALGRIND                Suite for debugging and profiling programs."
 	echo "  MKDOCS                  Project documentation generator."
 	echo
 	echo "GEML version $GEML_VERSION"

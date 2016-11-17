@@ -62,6 +62,7 @@ void print_message(const char *file, const int line, enum Verbosity level, const
 	va_list args;
 	va_start(args, msg);
 	vfprintf(stderr, msg, args);
+	va_end(args);
 	fputs("\n", stderr);
 }
 
