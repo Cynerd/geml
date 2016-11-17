@@ -38,7 +38,7 @@ DEP = $(patsubst src/%.c,$(O)/build/%.d,$(CSRC))
 
 .PHONY: help
 help:
-	@echo "Simple general preprocessor make targets:"
+	@echo "General extendable macro language make targets:"
 	@echo " all|geml    - Build geml executable"
 	@echo " help        - Prints this text help."
 	@echo " install     - Install geml to you system"
@@ -52,12 +52,21 @@ help:
 	@echo " Q             - Define emty to show executed commands"
 
 .PHONY: install
-install:
-	#TODO
+install: $(O)/geml
+	@echo " INSTALL $(EPREFIX)/bin/geml"
+	$(Q)$(INSTALL) -d $(EPREFIX)/bin
+	$(Q)$(INSTALL) -m 755 $(O)/geml $(EPREFIX)/bin
+	@echo " INSTALL $(EPREFIX)/share/man/man1/geml.1.gz"
+	$(Q)$(INSTALL) -d $(PREFIX)/share/man/man1
+	$(Q)$(INSTALL) -m 644 docs/geml.man $(PREFIX)/share/man/man1/geml.1
+	$(Q)$(GZIP) -f $(PREFIX)/share/man/man1/geml.1
 
 .PHONY: uninstall
 uninstall:
-	#TODO
+	@echo " RM  $(EPREFIX)/bin/geml"
+	$(Q)$(RM) $(EPREFIX)/bin/geml
+	@echo " RM  $(PREFIX)/share/man/man1/geml.1.gz"
+	$(Q)$(RM) $(PREFIX)/share/man/man1/geml.1.gz
 
 # Cleaning
 .PHONY: clean

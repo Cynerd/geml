@@ -1,0 +1,36 @@
+.\" vim: ft=groff
+.\" Manpage for geml.
+.TH sterm 1 "17 November 2016" "17112016"
+.SH NAME
+geml \- General extendable macro language processing tool
+.SH SYNOPSIS
+geml [OPTION]... INPUT_FILE
+.SH DESCRIPTION
+.PP
+TODO
+.SH OPTIONS
+.TP
+\fB\-v, --verbose\fR
+Increases vebosity of output.
+.TP
+\fB\-q, --quiet\fR
+Decreases vebosity of output.
+.TP
+\fB\-o, --output OUTPUT_FILE\fR
+Sets file in which output is going to be stored.
+.TP
+\fB\-h, --help\fR
+Prints this help.
+.TP
+\fB\--version\fR
+Prints geml version.
+
+.SH BUGS
+No known bugs.
+
+.SH SEE ALSO
+.BR ed (1),
+.BR awk (1),
+.BR sed (1).
+.SH AUTHOR
+Karel Kočí (cynerd@email.cz)

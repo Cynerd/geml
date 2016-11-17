@@ -14,6 +14,8 @@ CPREFIX:::T:F
 CC:cc::T:F
 CFLAGS:::T:F
 LFLAGS:::T:F
+INSTALL:install::T:F
+GZIP:gzip::T:F
 DOT:dot::T:F
 MKDOCS:mkdocs::T:F"
 ############################################################################
@@ -40,6 +42,8 @@ print_help() {
 	echo "  CC                      C compiler command."
 	echo "  CFLAGS                  C compiler flags."
 	echo "  LDFLAGS                 C Linker flags."
+	echo "  INSTALL                 Copy files and set attributes."
+	echo "  GZIP                    Compress file."
 	echo "  DOT                     Directed graphs drawing program."
 	echo "  MKDOCS                  Project documentation generator."
 	echo
@@ -51,7 +55,7 @@ CONFIG_FILE=.config
 CONFIGURED_FILE=.configured # TODO
 
 # Backup variables from environment
-ENVVARS="CPREFIX CC CFLAGS LDFLAGS DOT MKDOCS"
+ENVVARS="CPREFIX CC CFLAGS LDFLAGS INSTALL GZIP DOT CPPCHECK VALGRIND MKDOCS"
 for E in $ENVVARS; do
 	eval "[ -n \"\${$E+y}\" ]" && eval "BACKUP_$E=\$$E"
 done
@@ -79,10 +83,21 @@ while [ "$#" -gt 0 ]; do
 			;;
 		--prefix)
 			PREFIX=$2
+			[ -z "$EPREFIX_USER" ] && EPREFIX="$PREFIX"
 			shift
 			;;
 		--prefix=*)
 			PREFIX=${1#--prefix=}
+			[ -z "$EPREFIX_USER" ] && EPREFIX="$PREFIX"
+			;;
+		--exec-prefix)
+			EPREFIX=$2
+			EPREFIX_USER=y
+			shift
+			;;
+		--exec-prefix=*)
+			EPREFIX=${1#--exec-prefix=}
+			EPREFIX_USER=y
 			;;
 		-d|--debug)
 			DEBUG=yes
